@@ -13,7 +13,8 @@ import Onboarding from './components/Onboarding';
 import { Zap } from 'lucide-react';
 
 function goHomeUrl() {
-  window.history.replaceState({}, '', '/');
+  const base = import.meta.env.BASE_URL || '/';
+  window.history.replaceState({}, '', base);
 }
 
 export default function App() {

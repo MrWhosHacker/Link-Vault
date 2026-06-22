@@ -1,0 +1,13 @@
+# Full-stack Link Vault — deploy from GitHub (no Netlify).
+# Render Dashboard → New → Blueprint → connect MrWhosHacker/Link-Vault
+services:
+  - type: web
+    name: link-vault
+    runtime: node
+    plan: free
+    buildCommand: npm install && npm run build
+    startCommand: npm start
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_VERSION
+        value: "22"

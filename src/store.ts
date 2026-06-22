@@ -326,14 +326,23 @@ export function isVaultShareCode(segment: string): boolean {
 export function parseShareCodeFromPath(pathname?: string): string | null {
   const path = pathname ?? (typeof window !== 'undefined' ? window.location.pathname : '');
   const segments = path.replace(/\/+$/, '').split('/').filter(Boolean);
-  if (segments.length !== 1) return null;
-  const code = decodeURIComponent(segments[0]).trim();
+  if (segments.length === 0) return null;
+  const last = segments[segments.length - 1];
+  const code = decodeURIComponent(last).trim();
   return isVaultShareCode(code) ? code.toUpperCase() : null;
 }
 
 export function buildVaultShareUrl(shareCode: string): string {
-  if (typeof window === 'undefined') return `/${encodeURIComponent(shareCode)}`;
-  return `${window.location.origin}/${encodeURIComponent(shareCode)}`;
+  const encoded = encodeURIComponent(shareCode);
+  const base = (import.meta.env.BASE_URL || '/').replace(/\/?$/, '/');
+  if (typeof window === 'undefined') {
+    return base === '/' ? `/${encoded}` : `${base}?vault=${encoded}`;
+  }
+  const origin = window.location.origin;
+  if (base !== '/') {
+    return `${origin}${base}?vault=${encoded}`;
+  }
+  return `${origin}/${encoded}`;
 }
 
 export function resolveVaultFromUrl(): PublicVaultSnapshot | null {
